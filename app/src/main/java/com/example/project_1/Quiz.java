@@ -3,6 +3,7 @@ package com.example.project_1;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +22,14 @@ public class Quiz extends AppCompatActivity {
     RadioGroup rdoGroup;
     ArrayList<DictionaryItem> choices; //holds the list of choices for a given question
     ArrayList<DictionaryItem> words; //holds the list of words that the user will be quizzed on
-    String correctAnswer;
+    DictionaryItem correctAnswer;
     int remainingQuestions, numCorrectAnswers;
     long timeStart;
     SharedPreferences sp;
     SharedPreferences.Editor spEditor;
     TextView tvQuizWord, tvQuestionLabel, tvHeader;
     boolean synonym, definition, all;
+    int pos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,13 @@ public class Quiz extends AppCompatActivity {
             remainingQuestions--;
         }
 
+        if(remainingQuestions == 0){
+            long totalTime = System.currentTimeMillis() - timeStart;
+            Intent statsActivity = new Intent(this, StatsActivity.class);
+            statsActivity.putExtra("totalTime", totalTime);
+            statsActivity.putExtra("numCorrectAnswers", numCorrectAnswers);
+            startActivity(statsActivity);
+        }
 
         btnSubmit.setOnClickListener(v->{
             if(choiceSelected()){
@@ -75,12 +84,26 @@ public class Quiz extends AppCompatActivity {
         });
     }
 
+    private void initialize(){
+        rdoGroup.setVisibility(View.INVISIBLE);
+        tvQuizWord.setVisibility(View.INVISIBLE);
+        tvQuestionLabel.setVisibility(View.INVISIBLE);
+        btnSubmit.setVisibility(View.INVISIBLE);
+        if(synonym){
+            tvHeader.setText("Select the synonym that correctly matches the word");
+        }else if(definition){
+            tvHeader.setText("Select the definition that correctly matches the word");
+        }else{
+            tvHeader.setText("Select the definition or synonym that correctly matches the word");
+        }
+    }
+
     private boolean choiceSelected(){
         //makes sure that a radiobutton is selected
         return rdoGroup.getCheckedRadioButtonId() != -1;
     }
 
-    private DictionaryItem getANewWord(){
+    private DictionaryItem getANewItem(){
         //pick a random word to quiz the user on
         Random randomElement = new Random();
         int index = randomElement.nextInt(words.size());
@@ -90,7 +113,7 @@ public class Quiz extends AppCompatActivity {
     private void checkAnswer(){
         //checks the answer that the user picked against the correct answer
         RadioButton checked = (RadioButton) rdoGroup.getChildAt(rdoGroup.getCheckedRadioButtonId());
-        if(checked.getText().equals(correctAnswer)){
+        if (rdoGroup.getChildAt(pos) == checked){
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
             numCorrectAnswers++;
         }else{
@@ -99,34 +122,21 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void generateNewQuestion(){
-        DictionaryItem newWord = getANewWord();
-        tvQuizWord.setText(newWord.getWord());
+        correctAnswer = getANewItem(); //gets a new correct answer
+        tvQuizWord.setText(correctAnswer.getWord()); //show the word that the user will have to guess the syn/def for
 
-        choices = new ArrayList<>();
-        for(int i = 0; i < 3; i++){
-            //will populate arraylist with 3 incorrect dictionaryItems
-            DictionaryItem temp = getANewWord();
-            if(!temp.word.equals(newWord.word)){ //makes sure that the added choice is not the correct dictionaryItem
+        choices = new ArrayList<>(); //will hold a list of dictionaryItems that will be displayed as options on the quiz
+        choices.add(correctAnswer); //adds the correct dictionaryItem
+        for(int i = 0; i < 3; i++){ //will populate arraylist with 3 incorrect dictionaryItems
+            DictionaryItem temp = getANewItem(); //gets a new dictionaryItem
+            if(!temp.word.equals(correctAnswer.word)){ //makes sure that the added choice is not the correct dictionaryItem
                 choices.add(temp);
             }else{
-                choices.add(getANewWord());
+                choices.add(getANewItem());
             }
         }
-        choices.add(newWord); //adds the correct dictionaryItem
         Collections.shuffle(choices); //shuffle the arraylist so that the choices are randomly ordered
-        if(definition){
-            //get the definition
-            correctAnswer = newWord.getDefinition();
-        }else if(synonym){
-            //get the synonym
-            correctAnswer = newWord.getSynonyms().get(0);
-        }else{ //user selected to have both definitions and synonyms on the quiz, so pick one at random be correct
-            if(choose() == 0){
-                correctAnswer = newWord.getDefinition();
-            }else{
-                correctAnswer = newWord.getSynonyms().get(0);
-            }
-        }
+        pos = choices.indexOf(correctAnswer); //gets the position of the correctAnswer in the arraylist
 
         for(int i = 0; i < choices.size(); i++){
             RadioButton rb = (RadioButton) rdoGroup.getChildAt(i);
@@ -150,17 +160,4 @@ public class Quiz extends AppCompatActivity {
         return randomNum.nextInt(2);
     }
 
-    private void initialize(){
-        rdoGroup.setVisibility(View.INVISIBLE);
-        tvQuizWord.setVisibility(View.INVISIBLE);
-        tvQuestionLabel.setVisibility(View.INVISIBLE);
-        btnSubmit.setVisibility(View.INVISIBLE);
-        if(synonym){
-            tvHeader.setText("Select the synonym that correctly matches the word");
-        }else if(definition){
-            tvHeader.setText("Select the definition that correctly matches the word");
-        }else{
-            tvHeader.setText("Select the definition or synonym that correctly matches the word");
-        }
-    }
 }

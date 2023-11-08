@@ -30,11 +30,11 @@ import java.util.concurrent.Executors;
 
 
 public class MainActivity extends AppCompatActivity {
-    static String word = "";
-    static int count = 0;
+
+
     ArrayList<Integer> nums;
     ArrayList<String> listOfWords, selectedWords;
-    static String definition = "", synonym = "";
+
 
     ExecutorService executorService;
     static RequestQueue queue;
@@ -81,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 if(!nums.contains(random)){
                     nums.add(random);
                     selectedWords.add(listOfWords.get(random));
-                    word = listOfWords.get(random);
-                    getDef();
+                    String word = listOfWords.get(random);
+                    getDef(word);
+
                 }
             }
 
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void getDef(){
+    public static void getDef(String word){
             try {
                 String url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
                 JsonArrayRequest r = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
@@ -101,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject first = meaning.getJSONObject(0);
                         JSONArray definitions = first.getJSONArray("definitions");
                         JSONObject def = definitions.getJSONObject(0);
-                        definition = def.getString("definition");
-                        //def.getJSONArray("definition");
+                        String definition = def.getString("definition");
 
+                        getSyn(word, definition);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -114,23 +115,27 @@ public class MainActivity extends AppCompatActivity {
                 queue.add(r);
 
             }catch (Exception e){
-                definition = "null";
+
             }
     }
 
-    public static void getSyn(){
+    public static void getSyn(String word, String definition){
         try {
             String url = "https://api.api-ninjas.com/v1/thesaurus?word="+ word + "&X-Api-Key=hIHbhVmlkuSbUvkEnuvyhg==YAsEJ2nPEgRNcOpk";
+            String finalDefinition = definition;
             JsonObjectRequest r = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
-                    String word = response.getString("word");
+                    String word1 = response.getString("word");
                     JSONArray synonyms = response.getJSONArray("synonyms");
                     ArrayList<String> temp = new ArrayList<>();
-                    temp.add(synonyms.getString(0));
-                    temp.add(synonyms.getString(1));
-                    temp.add(synonyms.getString(2));
+                    if(synonyms.length() > 2) {
+                        temp.add(synonyms.getString(0));
+                        temp.add(synonyms.getString(1));
+                        temp.add(synonyms.getString(2));
+                    }
 
-                    Dictionary.dictionary.add(new DictionaryItem(word, definition, temp, false));
+                    Dictionary.dictionary.add(new DictionaryItem(word, finalDefinition, temp, false));
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

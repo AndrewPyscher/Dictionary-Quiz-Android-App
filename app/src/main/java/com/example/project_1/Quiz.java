@@ -44,7 +44,7 @@ public class Quiz extends AppCompatActivity {
         tvHeader = findViewById(R.id.tvHeader);
         ArrayList<String> wordList = getWords(); //populate 'words' with either a list of favorites or just a random list of words
         //the number of words in the list should be the same as the number of questions that the user wants to do
-        words = convertListToItems(wordList);
+        words = Dictionary.dictionary;
         sp = getSharedPreferences("SETTINGS", Context.MODE_PRIVATE);
         spEditor = sp.edit();
         remainingQuestions = sp.getInt("NumberOfQuestions", 10); //whatever the shared preference is named in settings activity
@@ -58,6 +58,7 @@ public class Quiz extends AppCompatActivity {
             tvQuizWord.setVisibility(View.VISIBLE);
             tvQuestionLabel.setVisibility(View.VISIBLE);
             btnSubmit.setVisibility(View.VISIBLE);
+            tvHeader.setVisibility(View.VISIBLE);
             timeStart = System.currentTimeMillis();
         });
 
@@ -124,7 +125,7 @@ public class Quiz extends AppCompatActivity {
         Collections.shuffle(choices);
         if(type.equals("Definitions")){
             //get the definition
-            correctAnswer = newWord.getDefinitions().get(0);
+            correctAnswer = newWord.getDefinition();
         }else{
             //get the synonym
             correctAnswer = newWord.getSynonyms().get(0);
@@ -134,7 +135,7 @@ public class Quiz extends AppCompatActivity {
         for(int i = 0; i < choices.size(); i++){
             RadioButton rb = (RadioButton) rdoGroup.getChildAt(i);
             if(type.equals("Definitions")){
-                rb.setText(choices.get(i).getDefinitions().get(0));
+                rb.setText(choices.get(i).getDefinition());
             }else{
                 rb.setText(choices.get(i).getSynonyms().get(0));
             }
@@ -151,11 +152,5 @@ public class Quiz extends AppCompatActivity {
         }else{
             tvHeader.setText("Select the definition that correctly matches the word");
         }
-    }
-
-    private ArrayList<DictionaryItem> convertListToItems(ArrayList<String> list){
-        //takes in an arraylist of strings and converts it to an arraylist of DictionaryItems
-        //not sure if this is possible really
-        return null;
     }
 }

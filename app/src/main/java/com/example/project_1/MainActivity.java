@@ -32,16 +32,24 @@ import java.util.concurrent.Executors;
 public class MainActivity extends AppCompatActivity {
 
 
+    Button btnSettings;
+
     ArrayList<Integer> nums;
     ArrayList<String> listOfWords, selectedWords;
 
 
     ExecutorService executorService;
     static RequestQueue queue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnSettings = findViewById(R.id.btnSettings);
+        btnQuiz = findViewById(R.id.btnQuiz);
+        btnBrowseWords = findViewById(R.id.btnBrowseWords);
+
 
         queue =  Volley.newRequestQueue(this);
         nums = new ArrayList<>();
@@ -57,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
             Dictionary.createDictionary();
             readFile();
 
+
+        });
+
+        btnSettings.setOnClickListener(e->{
+            //to be set later when browse words activity is created
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         });
 
     }

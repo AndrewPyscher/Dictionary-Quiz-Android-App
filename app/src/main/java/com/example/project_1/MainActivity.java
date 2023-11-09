@@ -75,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        btnQuiz.setOnClickListener(e->{
+            if(Dictionary.dictionary.size() >= 4){
+                Intent quiz = new Intent(this, Quiz.class);
+                startActivity(quiz);
+            }
+        });
+
     }
 
     public void readFile(){

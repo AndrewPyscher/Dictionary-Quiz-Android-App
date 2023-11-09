@@ -106,7 +106,7 @@ public class Quiz extends AppCompatActivity {
     private DictionaryItem getANewItem(){
         //pick a random word to quiz the user on
         Random randomElement = new Random();
-        int index = randomElement.nextInt(words.size());
+        int index = randomElement.nextInt(words.size()-1);
         return words.get(index);
     }
 

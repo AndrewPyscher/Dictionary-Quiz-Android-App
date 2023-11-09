@@ -18,6 +18,9 @@
             android:name=".StatsActivity"
             android:exported="false" />
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".BrowseWords"
             android:exported="false" />
         <activity

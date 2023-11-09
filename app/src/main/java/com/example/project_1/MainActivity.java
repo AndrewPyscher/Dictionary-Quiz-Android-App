@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<Integer> nums;
     ArrayList<String> listOfWords, selectedWords;
-
+    Button btnQuiz, btnBrowseWords;
 
     ExecutorService executorService;
     static RequestQueue queue;
@@ -147,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
                         temp.add(synonyms.getString(0));
                         temp.add(synonyms.getString(1));
                         temp.add(synonyms.getString(2));
+                        Dictionary.dictionary.add(new DictionaryItem(word, finalDefinition, temp, false));
                     }
 
-                    Dictionary.dictionary.add(new DictionaryItem(word, finalDefinition, temp, false));
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);

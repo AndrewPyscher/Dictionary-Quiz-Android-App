@@ -1,6 +1,7 @@
 package com.example.project_1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,23 +25,19 @@ public class SettingsActivity extends AppCompatActivity {
     RadioGroup rdgQuizOptions;
     RadioButton rdbDefinitions, rdbSynonyms, rdbAll;
     SeekBar seekQuizLength, seekFontSize;
-    String color_options[] = {"Gray, Red, Navy, Purple, Orange, Green, Black"};
-    String selectedColor = "";
+    String color_options[] = {"Black","Red","Navy","Purple","Orange","Green"};
     Button btnSave, btnCancel;
-    TextView txtFontSizeNum, txtQuestionNum;
-    String fontColor = "";
-
-    String colorHex = "";
-    Integer fontSize, numQuestions;
-    Boolean darkMode;
-
-    Boolean rdbAllStatus, rdbSynonymStatus, rdbDefinitionStatus;
+    TextView txtFontSize, txtNumQuestions;
+    boolean beginningState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
         //initialize views
+        txtFontSize = findViewById(R.id.txtFontSize);
+        txtNumQuestions = findViewById(R.id.txtNumQuestions);
         spinFontColor = findViewById(R.id.spinFontColor);
         seekFontSize = findViewById(R.id.seekFontSize);
         seekQuizLength = findViewById(R.id.seekQuizLength);
@@ -51,8 +48,19 @@ public class SettingsActivity extends AppCompatActivity {
         rdbSynonyms = findViewById(R.id.rdbSynonyms);
         btnCancel = findViewById(R.id.btnCancel);
         btnSave = findViewById(R.id.btnSave);
-        txtFontSizeNum = findViewById(R.id.txtFontSizeNum);
-        txtQuestionNum = findViewById(R.id.txtQuestionNum);
+
+
+        //create spinner listener before intents to ensure proper behavior
+        ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,color_options);
+        spinFontColor.setAdapter(colorAdapter);
+        spinFontColor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         //get intent from main activity
         Intent i = getIntent();
@@ -62,16 +70,21 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPref = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
 
         //bring in previous shared preferences
-        String fontColorSetting = sharedPref.getString("FONT_COLOR", "#000000");
-        Integer fontSizeSetting = sharedPref.getInt("FONT_SIZE", 12);
+         Integer fontColorSetting = sharedPref.getInt("FONT_COLOR", 0);
+         spinFontColor.setSelection(fontColorSetting);
 
+        Integer fontSizeSetting = sharedPref.getInt("FONT_SIZE", 12);
+        txtFontSize.setText("Font Size: " + fontSizeSetting);
         seekFontSize.setProgress(fontSizeSetting);
 
         Boolean darkModeSetting = sharedPref.getBoolean("DARK_MODE", false);
+        //continue to debug this
         switchDarkMode.setChecked(darkModeSetting);
+        beginningState = darkModeSetting;
 
-        Integer quizQuestions = sharedPref.getInt("QUIZ_QUESTION_PREF", 10);
+        Integer quizQuestions = sharedPref.getInt("NUM_QUESTIONS", 10);
         seekQuizLength.setProgress(quizQuestions);
+        txtNumQuestions.setText("Number of Questions: "+quizQuestions);
 
         Boolean all = sharedPref.getBoolean("QUIZ_MODE_ALL", true);
         rdbAll.setChecked(all);
@@ -85,46 +98,14 @@ public class SettingsActivity extends AppCompatActivity {
         //create new intent for going back to the main screen
         Intent intentToMain = new Intent(this, MainActivity.class );
 
-        //populate color spinner
-        ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,color_options);
-        spinFontColor.setAdapter(colorAdapter);
-        spinFontColor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                //change the font color for other views by updating the shared preferences
-                fontColor = spinFontColor.getSelectedItem() +"";
-                if(fontColor == "Gray"){
-                    colorHex = "#707B7C";
-                } else if (fontColor == "Red") {
-                    colorHex = "#B03A2E";
-                }else if (fontColor == "Navy") {
-                    colorHex = "#1A5276";
-                }else if (fontColor == "Purple") {
-                    colorHex = "#6C3483";
-                }else if (fontColor == "Orange") {
-                    colorHex = "#D35400";
-                }else if (fontColor == "Green") {
-                    colorHex = "#1E8449";
-                }else if (fontColor == "Black") {
-                    colorHex = "#000000";
-                }
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        //create a listener for the dark mode switch
         switchDarkMode.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(switchDarkMode.isChecked()){
-                    darkMode = true;
-                }
+                if(isChecked)
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 else
-                    darkMode = false;
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
 
@@ -132,48 +113,50 @@ public class SettingsActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if user toggled the dark mode since being in settings page, but does not save the changes
+                //review this IF statement after intent settings are implemented in main
+                if(beginningState != switchDarkMode.isChecked()){
+                    switchDarkMode.setChecked(beginningState);
+                }
                 startActivity(intentToMain);
             }
         });
-
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // save shared preferences
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("FONT_COLOR", String.valueOf(colorHex));
-                editor.putInt("FONT_SIZE", fontSize);
-                editor.putBoolean("DARK_MODE", darkMode);
+                editor.putInt("FONT_COLOR", spinFontColor.getSelectedItemPosition());
+                editor.putInt("FONT_SIZE", seekFontSize.getProgress());
+                editor.putBoolean("DARK_MODE", switchDarkMode.isChecked());
                 editor.putBoolean("QUIZ_MODE_ALL", rdbAll.isChecked());
                 editor.putBoolean("QUIZ_MODE_DEFINITIONS", rdbDefinitions.isChecked());
                 editor.putBoolean("QUIZ_MODE_SYNONYMS", rdbSynonyms.isChecked());
-                editor.putInt("NUM_QUESTIONS", numQuestions);
+                editor.putInt("NUM_QUESTIONS", seekQuizLength.getProgress());
                 editor.apply();
                 startActivity(intentToMain);
             }
         });
 
+        //create a listener for the font size settings
         seekFontSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFontSizeNum.setText(String.valueOf(progress));
-                fontSize = progress;
+                txtFontSize.setText("Font Size: "+String.valueOf(progress));
+
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
         seekQuizLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtQuestionNum.setText(String.valueOf(progress));
-                numQuestions = progress;
+                txtNumQuestions.setText("Number of Questions: "+String.valueOf(progress));
             }
 
             @Override

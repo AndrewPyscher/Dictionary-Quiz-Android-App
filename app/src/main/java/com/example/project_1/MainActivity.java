@@ -10,11 +10,13 @@ public class MainActivity extends AppCompatActivity {
     Button btnQuiz;
     Button btnBrowseWords;
 
+    Button btnSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        btnSettings = findViewById(R.id.btnSettings);
         btnQuiz = findViewById(R.id.btnQuiz);
         btnBrowseWords = findViewById(R.id.btnBrowseWords);
 
@@ -26,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         btnBrowseWords.setOnClickListener(e->{
             //to be set later when browse words activity is created
             Intent intent = new Intent(this, BrowseWords.class);
+            startActivity(intent);
+        });
+        btnSettings.setOnClickListener(e->{
+            //to be set later when browse words activity is created
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         });
     }

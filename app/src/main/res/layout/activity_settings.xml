@@ -7,40 +7,29 @@
     tools:context=".SettingsActivity">
 
     <TextView
-        android:id="@+id/txtAppPreferencesLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="App Preferences:"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtHeader" />
-
-    <TextView
         android:id="@+id/txtNumQuestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Select the quiz length:"
+        android:text="Number of Questions:"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/txtQuizLabel"
-        app:layout_constraintTop_toBottomOf="@+id/rdgQuizOptions" />
+        app:layout_constraintStart_toStartOf="@+id/txtFontSize"
+        app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
     <TextView
-        android:id="@+id/txtFontSizeLabel"
+        android:id="@+id/txtFontSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Font Size:"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/txtFontColorLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtFontColorLabel" />
+        app:layout_constraintStart_toStartOf="@+id/txtFontColor"
+        app:layout_constraintTop_toBottomOf="@+id/txtFontColor" />
 
     <TextView
         android:id="@+id/txtHeader"
-        android:layout_width="0dp"
+        android:layout_width="411dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Settings"
@@ -50,150 +39,87 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtFontColorLabel"
+        android:id="@+id/txtFontColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:text="Font Color:"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/spinFontColor"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtAppPreferencesLabel" />
+        app:layout_constraintStart_toStartOf="@+id/txtQuizPrefLabel"
+        app:layout_constraintTop_toBottomOf="@+id/txtQuizPrefLabel" />
 
     <Spinner
         android:id="@+id/spinFontColor"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtFontColorLabel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/txtFontColorLabel"
-        app:layout_constraintTop_toTopOf="@+id/txtFontColorLabel"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/txtQuizLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Select the data included in the quiz:"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/spinFontColor"
-        app:layout_constraintStart_toStartOf="@+id/txtTheme"
-        app:layout_constraintTop_toBottomOf="@+id/txtQuizPrefLabel" />
+        app:layout_constraintBottom_toBottomOf="@+id/txtFontColor"
+        app:layout_constraintEnd_toEndOf="@+id/switchDarkMode"
+        app:layout_constraintTop_toTopOf="@+id/txtFontColor" />
 
-    <RadioGroup
-        android:id="@+id/rdgQuizOptions"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/txtQuestionType"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/txtQuizLabel"
-        app:layout_constraintStart_toStartOf="@+id/txtQuizLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtQuizLabel">
-
-        <RadioButton
-            android:id="@+id/rdbSynonyms"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Synonyms" />
-
-        <RadioButton
-            android:id="@+id/rdbDefinitions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Definitions" />
-
-        <RadioButton
-            android:id="@+id/rdbAll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="All" />
-    </RadioGroup>
+        android:layout_marginTop="32dp"
+        android:text="Select Question Type:"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/txtNumQuestions"
+        app:layout_constraintTop_toBottomOf="@+id/txtNumQuestions" />
 
     <TextView
         android:id="@+id/txtQuizPrefLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Quiz Preferences:"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/txtAppPreferencesLabel"
-        app:layout_constraintTop_toBottomOf="@+id/txtTheme" />
+        app:layout_constraintStart_toStartOf="@+id/switchDarkMode"
+        app:layout_constraintTop_toBottomOf="@+id/switchDarkMode" />
 
     <SeekBar
         android:id="@+id/seekQuizLength"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:max="30"
         android:min="5"
-        app:layout_constraintEnd_toEndOf="@+id/rdgQuizOptions"
-        app:layout_constraintStart_toStartOf="@+id/rdgQuizOptions"
-        app:layout_constraintTop_toBottomOf="@+id/txtNumQuestions" />
-
-    <TextView
-        android:id="@+id/txtQuestionNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="questions"
-        app:layout_constraintEnd_toEndOf="@+id/seekQuizLength"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="@+id/seekQuizLength"
-        app:layout_constraintTop_toBottomOf="@+id/seekQuizLength" />
+        app:layout_constraintBottom_toBottomOf="@+id/txtNumQuestions"
+        app:layout_constraintEnd_toEndOf="@+id/seekFontSize"
+        app:layout_constraintStart_toStartOf="@+id/seekFontSize"
+        app:layout_constraintTop_toTopOf="@+id/txtNumQuestions" />
 
     <SeekBar
         android:id="@+id/seekFontSize"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:max="20"
         android:min="8"
-        app:layout_constraintEnd_toStartOf="@+id/txtFontSizeNum"
-        app:layout_constraintStart_toStartOf="@+id/spinFontColor"
-        app:layout_constraintTop_toTopOf="@+id/txtFontSizeNum" />
-
-    <TextView
-        android:id="@+id/txtFontSizeNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="0"
+        app:layout_constraintBottom_toBottomOf="@+id/txtFontSize"
         app:layout_constraintEnd_toEndOf="@+id/spinFontColor"
-        app:layout_constraintTop_toBottomOf="@+id/spinFontColor" />
+        app:layout_constraintStart_toStartOf="@+id/spinFontColor"
+        app:layout_constraintTop_toTopOf="@+id/txtFontSize" />
 
     <Switch
         android:id="@+id/switchDarkMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="346dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="20dp"
         android:text="Dark Mode"
-        app:layout_constraintEnd_toEndOf="@+id/txtFontSizeNum"
-        app:layout_constraintTop_toBottomOf="@+id/seekFontSize" />
-
-    <TextView
-        android:id="@+id/txtTheme"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Theme:"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/txtFontSizeLabel"
-        app:layout_constraintTop_toTopOf="@+id/switchDarkMode" />
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtHeader" />
 
     <Button
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"
         android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnCancel"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtQuestionNum" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnCancel"
@@ -204,5 +130,37 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnSave"
         app:layout_constraintTop_toTopOf="@+id/btnSave" />
+
+    <RadioGroup
+        android:id="@+id/rdgQuizOptions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation='horizontal'
+        app:layout_constraintEnd_toEndOf="@+id/seekQuizLength"
+        app:layout_constraintStart_toStartOf="@+id/txtQuestionType"
+        app:layout_constraintTop_toBottomOf="@+id/txtQuestionType">
+
+        <RadioButton
+            android:id="@+id/rdbDefinitions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Definitions" />
+
+        <RadioButton
+            android:id="@+id/rdbAll"
+            android:layout_width="103dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="All" />
+
+        <RadioButton
+            android:id="@+id/rdbSynonyms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Synonyms" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

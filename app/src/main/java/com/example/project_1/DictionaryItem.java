@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 public class DictionaryItem {
     String word;
-    ArrayList<String> definitions;
+
+    String definition;
     ArrayList<String> synonyms;
     boolean favorite;
 
-    public DictionaryItem(String word, ArrayList<String> definitions, ArrayList<String> synonyms, boolean favorite) {
+    public DictionaryItem(String word, String definition, ArrayList<String> synonyms, boolean favorite) {
         this.word = word;
-        this.definitions = definitions;
+        this.definition = definition;
         this.synonyms = synonyms;
         this.favorite = favorite;
     }
@@ -23,12 +24,12 @@ public class DictionaryItem {
         this.word = word;
     }
 
-    public ArrayList<String> getDefinitions() {
-        return definitions;
+    public String getDefinition() {
+        return definition;
     }
 
-    public void setDefinitions(ArrayList<String> definitions) {
-        this.definitions = definitions;
+    public void setDefinitions(String definition) {
+        this.definition = definition;
     }
 
     public ArrayList<String> getSynonyms() {

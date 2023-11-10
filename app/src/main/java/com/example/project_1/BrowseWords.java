@@ -2,6 +2,7 @@ package com.example.project_1;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,6 +34,7 @@ public class BrowseWords extends AppCompatActivity {
         rcWordList = findViewById(R.id.rcWordList);
         btnSearch = findViewById(R.id.btnSearch);
         spnFilterOptions = findViewById(R.id.spnFilterOptions);
+        words = new ArrayList<>();
 
         Intent intent = getIntent();
         wordsAsStringCSV = intent.getStringArrayListExtra("wordList");
@@ -56,7 +58,7 @@ public class BrowseWords extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+                dictionaryAdapter.notifyDataSetChanged();
             }
         });
         helper.attachToRecyclerView(rcWordList);
@@ -72,7 +74,6 @@ public class BrowseWords extends AppCompatActivity {
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
     }

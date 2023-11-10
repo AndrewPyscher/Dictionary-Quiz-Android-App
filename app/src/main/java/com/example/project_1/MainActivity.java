@@ -1,6 +1,7 @@
 package com.example.project_1;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -57,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
         listOfWords = new ArrayList<>();
         selectedWords = new ArrayList<>();
 
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result ->{
+                });
+
 
         executorService = Executors.newSingleThreadExecutor();
 
@@ -67,17 +73,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnBrowseWords.setOnClickListener(e-> {
-            Intent intent = new Intent(this, BrowseWords.class);
-            ArrayList<String> wordListAsStrings = new ArrayList<>();
-            for (DictionaryItem dictionaryItem: Dictionary.getDictionary()) {
-                wordListAsStrings.add(dictionaryItem.getWord() + ","
-                        + dictionaryItem.getDefinition());
-            }
+            if(Dictionary.dictionary.size() >= 4) {
+                Intent intent = new Intent(this, BrowseWords.class);
+                ArrayList<String> wordListAsStrings = new ArrayList<>();
+                for (DictionaryItem dictionaryItem : Dictionary.getDictionary()) {
+                    wordListAsStrings.add(dictionaryItem.getWord() + ","
+                            + dictionaryItem.getDefinition());
+                }
 
-            Log.d("TEST", String.valueOf(wordListAsStrings.size()));
-            intent.putExtra("wordList", wordListAsStrings);
-            resultLauncher.launch(intent);
-            Log.d("TEST", Dictionary.dictionary.get(45) + "");
+                intent.putStringArrayListExtra("wordList", wordListAsStrings);
+                resultLauncher.launch(intent);
+            } else {
+                Toast.makeText(this, "Application is loading data.  "
+                        + Dictionary.getDictionary().size(), Toast.LENGTH_LONG).show();
+            }
         });
 
         btnSettings.setOnClickListener(e->{

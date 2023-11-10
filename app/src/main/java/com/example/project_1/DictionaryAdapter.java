@@ -47,7 +47,6 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
             }
         });
 
-
     }
     @Override
     public int getItemCount() {

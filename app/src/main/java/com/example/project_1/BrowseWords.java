@@ -83,6 +83,14 @@ public class BrowseWords extends AppCompatActivity {
                 }
                 else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("favorites")) {
                     //enter logic for sorting list to only include favorites
+                    ArrayList<DictionaryItem> favoriteWords = new ArrayList<>();
+                    for (int j = 0; j < words.size(); j++) {
+                        if (words.get(j).favorite) {
+                            favoriteWords.add(words.get(j));
+                        }
+                    }
+                    DictionaryAdapter favoriteAdapter = new DictionaryAdapter(favoriteWords, getApplicationContext());
+                    rcWordList.setAdapter(favoriteAdapter);
                 }
                 else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("random")) {
                     //enter logic for sorting list randomly

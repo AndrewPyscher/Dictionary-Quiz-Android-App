@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -44,13 +45,14 @@ public class Quiz extends AppCompatActivity {
 
         sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
         spEditor = sp.edit();
-        remainingQuestions = sp.getInt("QUIZ_QUESTION_PREF", 10); //whatever the shared preference is named in settings activity
+        remainingQuestions = sp.getInt("NUM_QUESTIONS", 10); //whatever the shared preference is named in settings activity
         definition = sp.getBoolean("QUIZ_MODE_DEFINITIONS", false);
         synonym = sp.getBoolean("QUIZ_MODE_SYNONYMS", false);
         all = sp.getBoolean("QUIZ_MODE_ALL", true);
 
         initialize();
         words = Dictionary.dictionary;
+        generateNewQuestion();
 
         btnStart.setOnClickListener(e->{
             btnStart.setVisibility(View.INVISIBLE);
@@ -62,22 +64,19 @@ public class Quiz extends AppCompatActivity {
             timeStart = System.currentTimeMillis();
         });
 
-        while(remainingQuestions > 0){
-            generateNewQuestion();
-            remainingQuestions--;
-        }
-
-        if(remainingQuestions == 0){
-            long totalTime = System.currentTimeMillis() - timeStart;
-            Intent statsActivity = new Intent(this, StatsActivity.class);
-            statsActivity.putExtra("totalTime", totalTime);
-            statsActivity.putExtra("numCorrectAnswers", numCorrectAnswers);
-            startActivity(statsActivity);
-        }
-
         btnSubmit.setOnClickListener(v->{
             if(choiceSelected()){
                 checkAnswer();
+                if(remainingQuestions > 0){
+                    generateNewQuestion();
+                }else{
+                    long totalTime = System.currentTimeMillis() - timeStart;
+                    Intent statsActivity = new Intent(this, StatsActivity.class);
+                    statsActivity.putExtra("totalTime", totalTime);
+                    statsActivity.putExtra("numCorrectAnswers", numCorrectAnswers);
+                    startActivity(statsActivity);
+                    finish();
+                }
             }else{
                 Toast.makeText(this, "Please select an answer.", Toast.LENGTH_SHORT).show();
             }
@@ -112,16 +111,18 @@ public class Quiz extends AppCompatActivity {
 
     private void checkAnswer(){
         //checks the answer that the user picked against the correct answer
-        RadioButton checked = (RadioButton) rdoGroup.getChildAt(rdoGroup.getCheckedRadioButtonId());
+        int selectedButtonID = rdoGroup.getCheckedRadioButtonId();
+        RadioButton checked = findViewById(selectedButtonID);
         if (rdoGroup.getChildAt(pos) == checked){
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
             numCorrectAnswers++;
         }else{
-            Toast.makeText(this, "Incorrect. The correct answer was: " + correctAnswer, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Incorrect. The correct answer was option " + pos, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void generateNewQuestion(){
+        remainingQuestions--;
         correctAnswer = getANewItem(); //gets a new correct answer
         tvQuizWord.setText(correctAnswer.getWord()); //show the word that the user will have to guess the syn/def for
 

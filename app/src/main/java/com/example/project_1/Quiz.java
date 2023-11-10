@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -20,14 +21,12 @@ import java.util.Random;
 public class Quiz extends AppCompatActivity {
     Button btnSubmit, btnStart;
     RadioGroup rdoGroup;
+    TextView tvQuizWord, tvQuestionLabel, tvHeader;
     ArrayList<DictionaryItem> choices; //holds the list of choices for a given question
-    ArrayList<DictionaryItem> words; //holds the list of words that the user will be quizzed on
+    ArrayList<DictionaryItem> words; //holds the list of words in the dictionary
     DictionaryItem correctAnswer;
     int remainingQuestions, numCorrectAnswers;
     long timeStart;
-    SharedPreferences sp;
-    SharedPreferences.Editor spEditor;
-    TextView tvQuizWord, tvQuestionLabel, tvHeader;
     boolean synonym, definition, all;
     int pos;
     @Override
@@ -42,15 +41,15 @@ public class Quiz extends AppCompatActivity {
         tvQuestionLabel = findViewById(R.id.tvQuestionLabel);
         tvHeader = findViewById(R.id.tvHeader);
 
-        sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
-        spEditor = sp.edit();
-        remainingQuestions = sp.getInt("QUIZ_QUESTION_PREF", 10); //whatever the shared preference is named in settings activity
+        SharedPreferences sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        remainingQuestions = sp.getInt("NUM_QUESTIONS", 10); //whatever the shared preference is named in settings activity
         definition = sp.getBoolean("QUIZ_MODE_DEFINITIONS", false);
         synonym = sp.getBoolean("QUIZ_MODE_SYNONYMS", false);
         all = sp.getBoolean("QUIZ_MODE_ALL", true);
 
         initialize();
         words = Dictionary.dictionary;
+        generateNewQuestion();
 
         btnStart.setOnClickListener(e->{
             btnStart.setVisibility(View.INVISIBLE);
@@ -62,22 +61,20 @@ public class Quiz extends AppCompatActivity {
             timeStart = System.currentTimeMillis();
         });
 
-        while(remainingQuestions > 0){
-            generateNewQuestion();
-            remainingQuestions--;
-        }
-
-        if(remainingQuestions == 0){
-            long totalTime = System.currentTimeMillis() - timeStart;
-            Intent statsActivity = new Intent(this, StatsActivity.class);
-            statsActivity.putExtra("totalTime", totalTime);
-            statsActivity.putExtra("numCorrectAnswers", numCorrectAnswers);
-            startActivity(statsActivity);
-        }
-
         btnSubmit.setOnClickListener(v->{
             if(choiceSelected()){
                 checkAnswer();
+                if(remainingQuestions > 0){
+                    deselectAllOptions();
+                    generateNewQuestion();
+                }else{
+                    long totalTime = System.currentTimeMillis() - timeStart;
+                    Intent statsActivity = new Intent(this, StatsActivity.class);
+                    statsActivity.putExtra("totalTime", totalTime);
+                    statsActivity.putExtra("numCorrectAnswers", numCorrectAnswers);
+                    startActivity(statsActivity);
+                    finish();
+                }
             }else{
                 Toast.makeText(this, "Please select an answer.", Toast.LENGTH_SHORT).show();
             }
@@ -100,7 +97,13 @@ public class Quiz extends AppCompatActivity {
 
     private boolean choiceSelected(){
         //makes sure that a radiobutton is selected
-        return rdoGroup.getCheckedRadioButtonId() != -1;
+        for(int i = 0; i <=3; i++){
+            RadioButton btn = (RadioButton) rdoGroup.getChildAt(i);
+            if(btn.isChecked()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private DictionaryItem getANewItem(){
@@ -112,32 +115,40 @@ public class Quiz extends AppCompatActivity {
 
     private void checkAnswer(){
         //checks the answer that the user picked against the correct answer
-        RadioButton checked = (RadioButton) rdoGroup.getChildAt(rdoGroup.getCheckedRadioButtonId());
+        int selectedButtonID = rdoGroup.getCheckedRadioButtonId();
+        RadioButton checked = findViewById(selectedButtonID);
         if (rdoGroup.getChildAt(pos) == checked){
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
             numCorrectAnswers++;
         }else{
-            Toast.makeText(this, "Incorrect. The correct answer was: " + correctAnswer, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Incorrect!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void generateNewQuestion(){
+        words = Dictionary.dictionary;
+        remainingQuestions--;
         correctAnswer = getANewItem(); //gets a new correct answer
-        tvQuizWord.setText(correctAnswer.getWord()); //show the word that the user will have to guess the syn/def for
-
         choices = new ArrayList<>(); //will hold a list of dictionaryItems that will be displayed as options on the quiz
         choices.add(correctAnswer); //adds the correct dictionaryItem
+
         for(int i = 0; i < 3; i++){ //will populate arraylist with 3 incorrect dictionaryItems
             DictionaryItem temp = getANewItem(); //gets a new dictionaryItem
-            if(!temp.word.equals(correctAnswer.word)){ //makes sure that the added choice is not the correct dictionaryItem
+            if(!temp.word.equals(correctAnswer.word) && !choices.contains(temp)){ //makes sure that the added choice is not the correct dictionaryItem
                 choices.add(temp);
             }else{
                 choices.add(getANewItem());
             }
         }
+
         Collections.shuffle(choices); //shuffle the arraylist so that the choices are randomly ordered
         pos = choices.indexOf(correctAnswer); //gets the position of the correctAnswer in the arraylist
+        displayNewQuestion();
+    }
 
+    private void displayNewQuestion(){
+        //displays the new question to the user
+        tvQuizWord.setText(correctAnswer.getWord()); //show the word that the user will have to guess the syn/def for
         for(int i = 0; i < choices.size(); i++){
             RadioButton rb = (RadioButton) rdoGroup.getChildAt(i);
             if(definition){
@@ -145,7 +156,7 @@ public class Quiz extends AppCompatActivity {
             }else if (synonym){
                 rb.setText(choices.get(i).getSynonyms().get(0));
             }else{ //user selected to have both definitions and synonyms on the quiz, so pick one at random to show
-                if(choose() == 0){
+                if(choose() == 1){
                     rb.setText(choices.get(i).getDefinition());
                 }else{
                     rb.setText(choices.get(i).getSynonyms().get(0));
@@ -158,6 +169,14 @@ public class Quiz extends AppCompatActivity {
         //randomly returns a 0 or 1
         Random randomNum = new Random();
         return randomNum.nextInt(2);
+    }
+
+    private void deselectAllOptions(){
+        //unchecks all radiobuttons
+        for(int i = 0; i<4; i++){
+            RadioButton radioButton = (RadioButton) rdoGroup.getChildAt(i);
+            radioButton.setChecked(false);
+        }
     }
 
 }

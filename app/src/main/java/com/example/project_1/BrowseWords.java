@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class BrowseWords extends AppCompatActivity {
     RecyclerView rcWordList;
@@ -64,6 +66,23 @@ public class BrowseWords extends AppCompatActivity {
         spnFilterOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("alphabetical")) {
+                    //enter logic for sorting list alphabetically
+                    ArrayList<DictionaryItem> alphabeticalWords = words;
+
+                    Collections.sort(alphabeticalWords, Comparator.comparing(DictionaryItem::getWord));
+
+                    DictionaryAdapter alphabeticalAdapter = new DictionaryAdapter(alphabeticalWords, getApplicationContext());
+                    rcWordList.setAdapter(alphabeticalAdapter);
+                }
+                else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("favorites")) {
+                    //enter logic for sorting list to only include favorites
+                }
+                else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("random")) {
+                    //enter logic for sorting list randomly
+                    rcWordList.setAdapter(dictionaryAdapter);
+                }
 
             }
             @Override

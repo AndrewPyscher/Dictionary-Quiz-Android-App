@@ -2,7 +2,9 @@ package com.example.project_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
@@ -15,7 +17,7 @@ public class StatsActivity extends AppCompatActivity {
     Button btnPlayAgain, btnBackToMain;
 
     //integer for how many milliseconds it took user to finish quiz
-    int millisecondsToFinish;
+    Long millisecondsToFinish;
 
     //variables for number of correct answers, questions from quiz, and percentage of correct answers
     int correctAnswers, numOfQuestions;
@@ -33,17 +35,19 @@ public class StatsActivity extends AppCompatActivity {
 
         //get intent from quiz that holds millisecondsToFinish, the number of correctly answered questions, and the total number of questions
         Intent quizIntent = getIntent();
-        millisecondsToFinish = quizIntent.getIntExtra("totalTime", -1);
-        correctAnswers = quizIntent.getIntExtra("correctAnswers", -1);
-        numOfQuestions = quizIntent.getIntExtra("numOfQuestions", -1);
+        millisecondsToFinish = quizIntent.getLongExtra("totalTime", -1);
+        correctAnswers = quizIntent.getIntExtra("numCorrectAnswers", -1);
+
+        SharedPreferences sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        numOfQuestions = sp.getInt("NUM_QUESTIONS", 10);
 
 
         updateTime(millisecondsToFinish);
         updateTimeColor(millisecondsToFinish);
 
         //five out of 10 as a place holder until quiz activity is working
-        updatePercentageCorrect(5, 10);
-        updatePercentageCorrectColor(5, 10);
+        updatePercentageCorrect(correctAnswers, numOfQuestions);
+        updatePercentageCorrectColor(correctAnswers, numOfQuestions);
 
         btnPlayAgain.setOnClickListener(e->{
             Intent playAgainIntent = new Intent(this, Quiz.class);
@@ -58,7 +62,7 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     //make time background color green if under 30 seconds, yellow if under 1 minute, and red if over 1 minute
-    public void updateTimeColor (int milliseconds) {
+    public void updateTimeColor (Long milliseconds) {
         if (milliseconds < 30000) {
             tvTime.setBackgroundColor(Color.GREEN);
         }
@@ -86,12 +90,12 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     //display time on tvTime
-    public void updateTime (int milliseconds) {
+    public void updateTime (Long milliseconds) {
         String time = "00:00";
 
-        int totalSeconds = milliseconds / 1000;
-        int minutes = totalSeconds / 60;
-        int seconds = totalSeconds % 60;
+        Long totalSeconds = milliseconds / 1000;
+        Long minutes = totalSeconds / 60;
+        Long seconds = totalSeconds % 60;
 
         if (seconds < 10) {
             time = minutes + ":0" + seconds;

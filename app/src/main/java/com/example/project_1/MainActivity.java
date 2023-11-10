@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 result ->{
                 });
 
-
         executorService = Executors.newSingleThreadExecutor();
 
          //start thread
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnBrowseWords.setOnClickListener(e-> {
-            if(Dictionary.dictionary.size() >= 4) {
+            if(Dictionary.dictionary.size() >= 10) {
                 Intent intent = new Intent(this, BrowseWords.class);
                 ArrayList<String> wordListAsStrings = new ArrayList<>();
                 for (DictionaryItem dictionaryItem : Dictionary.getDictionary()) {
@@ -83,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
                             + dictionaryItem.getDefinition());
                 }
 
-                intent.putStringArrayListExtra("wordList", wordListAsStrings);
-                resultLauncher.launch(intent);
+//                intent.putStringArrayListExtra("wordList", wordListAsStrings);
+//                resultLauncher.launch(intent);
+                startActivity(intent);
             } else {
                 Toast.makeText(this, "Application is loading data.  "
                         + Dictionary.getDictionary().size(), Toast.LENGTH_LONG).show();
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void getSyn(String word, String definition){
         try {
-            String url = "https://api.api-ninjas.com/v1/thesaurus?word="+ word + "&X-Api-Key=hIHbhVmlkuSbUvkEnuvyhg==YAsEJ2nPEgRNcOpk";
+            String url = "https://api.api-ninjas.com/v1/thesaurus?word=" + word + "&X-Api-Key=eyXZ3Gk1kOSWZbvIczcYhSwZMrf2ht9UpplA2syl";
             String finalDefinition = definition;
             JsonObjectRequest r = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {

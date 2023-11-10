@@ -34,15 +34,7 @@ public class BrowseWords extends AppCompatActivity {
         rcWordList = findViewById(R.id.rcWordList);
         btnSearch = findViewById(R.id.btnSearch);
         spnFilterOptions = findViewById(R.id.spnFilterOptions);
-        words = new ArrayList<>();
-
-        Intent intent = getIntent();
-        wordsAsStringCSV = intent.getStringArrayListExtra("wordList");
-
-        for (String word : wordsAsStringCSV) {
-            String[] splitValues =  word.split(",");
-            words.add(new DictionaryItem(splitValues[0], splitValues[1]));
-        }
+        words = Dictionary.getDictionary();
 
         DictionaryAdapter dictionaryAdapter = new DictionaryAdapter(words, this);
         rcWordList.setAdapter(dictionaryAdapter);
@@ -53,11 +45,13 @@ public class BrowseWords extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                dictionaryAdapter.notifyDataSetChanged();
                 return false;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                words = Dictionary.getDictionary();
                 dictionaryAdapter.notifyDataSetChanged();
             }
         });

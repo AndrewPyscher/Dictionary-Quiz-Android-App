@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 public class StatsActivity extends AppCompatActivity {
 
+    //create variables for text views
     TextView tvTime, tvPercentageCorrect;
 
+    //create variables for buttons
     Button btnPlayAgain, btnBackToMain;
 
     //integer for how many milliseconds it took user to finish quiz

@@ -79,52 +79,44 @@ public class BrowseWords extends AppCompatActivity {
 
                     DictionaryAdapter alphabeticalAdapter = new DictionaryAdapter(alphabeticalWords, getApplicationContext());
                     rcWordList.setAdapter(alphabeticalAdapter);
-                } else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("favorites")) {
+                }
+                else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("favorites")) {
                     //enter logic for sorting list to only include favorites
-                } else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("random")) {
+                }
+                else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("random")) {
                     //enter logic for sorting list randomly
                     rcWordList.setAdapter(dictionaryAdapter);
                 }
 
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
         //search a word or partial word in the dictionary
-        btnSearch.setOnClickListener(e -> {
-
-            if(btnSearch.getText().equals("Search")) {
-                //store search word
-                String search = edtSearchWord.getText() + "";
-                //Log.d("MYTAG", String.valueOf(words));
-                //create a new arraylist for storing the search results
-                ArrayList<DictionaryItem> searchedWords = new ArrayList<>();
+        btnSearch.setOnClickListener(e->{
+            //store search word
+            String search = edtSearchWord.getText()+"";
+            //Log.d("MYTAG", String.valueOf(words));
+            //create a new arraylist for storing the search results
+            ArrayList<DictionaryItem> searchedWords = new ArrayList<>();
                 for (int i = 0; i < words.size(); i++) {
-                    //get the word
-                    if (words.get(i).word.contains(search)) {
-                        searchedWords.add(words.get(i)); //add to the arraylist
+                   //get the word
+                  if(words.get(i).word.contains(search)){
+                      searchedWords.add(words.get(i)); //add to the arraylist
 
-                    }
+                  }
                 }
-
                 //create a new adapter with the results
-                DictionaryAdapter searchedAdapter = new DictionaryAdapter(searchedWords, getApplicationContext());
-                //update adapter
-                rcWordList.setAdapter(searchedAdapter);
-                //prompt user to return to regular dictionary browse with button click
-                btnSearch.setText("Clear");
+            DictionaryAdapter searchedAdapter = new DictionaryAdapter(searchedWords, getApplicationContext());
+            rcWordList.setAdapter(searchedAdapter);
 
-                //clear the search results
-            } else if (btnSearch.getText().equals("Clear")) {
-                edtSearchWord.setText(""); //clear the search box
-                btnSearch.setText("Search");
-                //update the list back to the main dictionary
-                rcWordList.setAdapter(dictionaryAdapter);
-            }
 
-        });
+            });
+
+
+
+
     }
 }

@@ -3,8 +3,11 @@ package com.example.project_1;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -103,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
             }
         });
+
+        SharedPreferences sharedPref = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        Boolean darkModeSetting = sharedPref.getBoolean("DARK_MODE", false);
+        if(darkModeSetting)
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     // method to read file

@@ -24,22 +24,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+// singleton class that makes a dictionary object that stores all the words for all activities to share
 public class Dictionary {
 
     static ArrayList<DictionaryItem> dictionary;
 
+    // dictionary arraylist to store all of the words
     public static void createDictionary(){
-
         dictionary = new ArrayList<>();
-
-     // check if length over 3
-
-     // use api to check defintion
-
-     // use api to check synomymmgsodg
-
-     // if passes all three of those add to list
-
     }
 
     public static ArrayList<DictionaryItem> getDictionary() {

@@ -9,6 +9,14 @@ public class DictionaryItem {
     ArrayList<String> synonyms;
     boolean favorite;
 
+    public DictionaryItem() {
+    }
+
+    public DictionaryItem(String word, String definition) {
+        this.word = word;
+        this.definition = definition;
+    }
+
     public DictionaryItem(String word, String definition, ArrayList<String> synonyms, boolean favorite) {
         this.word = word;
         this.definition = definition;
@@ -46,5 +54,15 @@ public class DictionaryItem {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    @Override
+    public String toString() {
+        return "DictionaryItem{" +
+                "word='" + word + '\'' +
+                ", definition='" + definition + '\'' +
+                ", synonyms=" + synonyms +
+                ", favorite=" + favorite +
+                '}';
     }
 }

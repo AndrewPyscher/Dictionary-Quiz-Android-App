@@ -1,5 +1,6 @@
 package com.example.project_1;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -38,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> nums;
     ArrayList<String> listOfWords, selectedWords;
     Button btnQuiz, btnBrowseWords;
-
     ExecutorService executorService;
     static RequestQueue queue;
+    ActivityResultLauncher resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         btnQuiz = findViewById(R.id.btnQuiz);
         btnBrowseWords = findViewById(R.id.btnBrowseWords);
 
-
         queue =  Volley.newRequestQueue(this);
         nums = new ArrayList<>();
         listOfWords = new ArrayList<>();
@@ -60,13 +60,24 @@ public class MainActivity extends AppCompatActivity {
 
         executorService = Executors.newSingleThreadExecutor();
 
-
          //start thread
         runOnUiThread(()->{
             Dictionary.createDictionary();
             readFile();
+        });
 
+        btnBrowseWords.setOnClickListener(e-> {
+            Intent intent = new Intent(this, BrowseWords.class);
+            ArrayList<String> wordListAsStrings = new ArrayList<>();
+            for (DictionaryItem dictionaryItem: Dictionary.getDictionary()) {
+                wordListAsStrings.add(dictionaryItem.getWord() + ","
+                        + dictionaryItem.getDefinition());
+            }
 
+            Log.d("TEST", String.valueOf(wordListAsStrings.size()));
+            intent.putExtra("wordList", wordListAsStrings);
+            resultLauncher.launch(intent);
+            Log.d("TEST", Dictionary.dictionary.get(45) + "");
         });
 
         btnSettings.setOnClickListener(e->{
@@ -81,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(quiz);
             }
         });
-
     }
 
     public void readFile(){
         InputStream is = getResources().openRawResource(R.raw.words);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
         try {
             String line = br.readLine();
             while(line!=null){
@@ -105,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                     nums.add(random);
                     selectedWords.add(listOfWords.get(random));
                     String word = listOfWords.get(random);
+
                     getDef(word);
 
                 }

@@ -96,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnQuiz.setOnClickListener(e->{
-            if(Dictionary.dictionary.size() >= 4){
+            if(Dictionary.dictionary.size() >= 10){
                 Intent quiz = new Intent(this, Quiz.class);
                 startActivity(quiz);
+            }else{
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_SHORT).show();
             }
         });
     }

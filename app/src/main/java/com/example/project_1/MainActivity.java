@@ -84,14 +84,14 @@ public class MainActivity extends AppCompatActivity {
             Intent it = new Intent(Intent.ACTION_VIEW,uri);
             startActivity(it);
         });
-
+        // listener that uses an implicit intent to take the user to the synonym api page
         btnApi2.setOnClickListener(e->{
             Uri uri = Uri.parse("https://api-ninjas.com/api/thesaurus");
             Intent it = new Intent(Intent.ACTION_VIEW,uri);
             startActivity(it);
         });
 
-        // listener that uses an implicit intent to take the user to the synonym api page
+
 
         // set listener for browse words. There is a check to wait until there is 10 words loaded from the api
         // before you can launch the activity.

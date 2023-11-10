@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
@@ -28,6 +27,7 @@ public class Quiz extends AppCompatActivity {
     int remainingQuestions, numCorrectAnswers;
     long timeStart;
     boolean synonym, definition, all;
+
     int pos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,6 @@ public class Quiz extends AppCompatActivity {
             if(choiceSelected()){
                 checkAnswer();
                 if(remainingQuestions > 0){
-                    deselectAllOptions();
                     generateNewQuestion();
                 }else{
                     long totalTime = System.currentTimeMillis() - timeStart;
@@ -126,6 +125,7 @@ public class Quiz extends AppCompatActivity {
     }
 
     private void generateNewQuestion(){
+        deselectAllOptions();
         words = Dictionary.dictionary;
         remainingQuestions--;
         correctAnswer = getANewItem(); //gets a new correct answer
@@ -177,6 +177,7 @@ public class Quiz extends AppCompatActivity {
             RadioButton radioButton = (RadioButton) rdoGroup.getChildAt(i);
             radioButton.setChecked(false);
         }
+        rdoGroup.clearCheck();
     }
 
 }

@@ -117,7 +117,7 @@ public class Quiz extends AppCompatActivity {
     }
 
     // when the app starts figure out the settings the user selected
-    // and make the
+    // and make the quiz invisible until the app starts.
     private void initialize(){
         rdoGroup.setVisibility(View.INVISIBLE);
         tvQuizWord.setVisibility(View.INVISIBLE);

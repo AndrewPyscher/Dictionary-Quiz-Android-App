@@ -44,6 +44,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
         holder.rdoFavorite.setChecked(dictionaryItem.favorite);
 
         //help
+        // AHHHHHHHHHHH
         holder.rdoFavorite.setOnClickListener(e->{
             if (holder.rdoFavorite.isChecked()) {
                 dictionaryItem.setFavorite(true);

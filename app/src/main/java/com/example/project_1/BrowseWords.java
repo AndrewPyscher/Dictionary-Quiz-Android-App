@@ -39,6 +39,7 @@ public class BrowseWords extends AppCompatActivity {
         rcWordList = findViewById(R.id.rcWordList);
         btnSearch = findViewById(R.id.btnSearch);
         spnFilterOptions = findViewById(R.id.spnFilterOptions);
+        // get the words from the dictionary class
         words = Dictionary.getDictionary();
         edtSearchWord = findViewById(R.id.edtSearchWord);
 

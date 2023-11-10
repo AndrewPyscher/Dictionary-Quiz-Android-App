@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
 //                resultLauncher.launch(intent);
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "Application is loading data.  "
-                        + Dictionary.getDictionary().size(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent quiz = new Intent(this, Quiz.class);
                 startActivity(quiz);
             }else{
-                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
             }
         });
     }

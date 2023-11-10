@@ -80,7 +80,8 @@ public class SettingsActivity extends AppCompatActivity {
         Boolean darkModeSetting = sharedPref.getBoolean("DARK_MODE", false);
         //continue to debug this
         switchDarkMode.setChecked(darkModeSetting);
-        beginningState = darkModeSetting;
+      //  beginningState = darkModeSetting;
+
 
         Integer quizQuestions = sharedPref.getInt("NUM_QUESTIONS", 10);
         seekQuizLength.setProgress(quizQuestions);
@@ -102,10 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
         switchDarkMode.setOnCheckedChangeListener(new Switch.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                else
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
             }
         });
 
@@ -125,6 +123,12 @@ public class SettingsActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(switchDarkMode.isChecked())
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                else
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
                 // save shared preferences
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("FONT_COLOR", spinFontColor.getSelectedItemPosition());
@@ -153,6 +157,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        //create
         seekQuizLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

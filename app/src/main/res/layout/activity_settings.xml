@@ -10,19 +10,9 @@
         android:id="@+id/txtNumQuestions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:text="Number of Questions:"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/txtFontSize"
-        app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
-
-    <TextView
-        android:id="@+id/txtFontSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Font Size:"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/txtFontColor"
         app:layout_constraintTop_toBottomOf="@+id/txtFontColor" />
@@ -43,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:text="Font Color:"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/txtQuizPrefLabel"
@@ -61,7 +51,7 @@
         android:id="@+id/txtQuestionType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
         android:text="Select Question Type:"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/txtNumQuestions"
@@ -84,20 +74,9 @@
         android:max="30"
         android:min="5"
         app:layout_constraintBottom_toBottomOf="@+id/txtNumQuestions"
-        app:layout_constraintEnd_toEndOf="@+id/seekFontSize"
-        app:layout_constraintStart_toStartOf="@+id/seekFontSize"
-        app:layout_constraintTop_toTopOf="@+id/txtNumQuestions" />
-
-    <SeekBar
-        android:id="@+id/seekFontSize"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:max="20"
-        android:min="8"
-        app:layout_constraintBottom_toBottomOf="@+id/txtFontSize"
         app:layout_constraintEnd_toEndOf="@+id/spinFontColor"
         app:layout_constraintStart_toStartOf="@+id/spinFontColor"
-        app:layout_constraintTop_toTopOf="@+id/txtFontSize" />
+        app:layout_constraintTop_toTopOf="@+id/txtNumQuestions" />
 
     <Switch
         android:id="@+id/switchDarkMode"

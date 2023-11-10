@@ -42,6 +42,7 @@ public class Dictionary {
 
     }
 
-
-
+    public static ArrayList<DictionaryItem> getDictionary() {
+        return dictionary;
+    }
 }

@@ -1,12 +1,17 @@
 package com.example.project_1;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -38,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> nums;
     ArrayList<String> listOfWords, selectedWords;
     Button btnQuiz, btnBrowseWords;
-
     ExecutorService executorService;
     static RequestQueue queue;
+    ActivityResultLauncher resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +56,38 @@ public class MainActivity extends AppCompatActivity {
         btnQuiz = findViewById(R.id.btnQuiz);
         btnBrowseWords = findViewById(R.id.btnBrowseWords);
 
-
         queue =  Volley.newRequestQueue(this);
         nums = new ArrayList<>();
         listOfWords = new ArrayList<>();
         selectedWords = new ArrayList<>();
 
+        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result ->{
+                });
 
         executorService = Executors.newSingleThreadExecutor();
-
 
          //start thread
         runOnUiThread(()->{
             Dictionary.createDictionary();
             readFile();
+        });
 
+        btnBrowseWords.setOnClickListener(e-> {
+            if(Dictionary.dictionary.size() >= 10) {
+                Intent intent = new Intent(this, BrowseWords.class);
+                ArrayList<String> wordListAsStrings = new ArrayList<>();
+                for (DictionaryItem dictionaryItem : Dictionary.getDictionary()) {
+                    wordListAsStrings.add(dictionaryItem.getWord() + ","
+                            + dictionaryItem.getDefinition());
+                }
 
+//                intent.putStringArrayListExtra("wordList", wordListAsStrings);
+//                resultLauncher.launch(intent);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
+            }
         });
 
         btnSettings.setOnClickListener(e->{
@@ -76,17 +97,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnQuiz.setOnClickListener(e->{
-            if(Dictionary.dictionary.size() >= 4){
+            if(Dictionary.dictionary.size() >= 10){
                 Intent quiz = new Intent(this, Quiz.class);
                 startActivity(quiz);
+            }else{
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     public void readFile(){
         InputStream is = getResources().openRawResource(R.raw.words);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
         try {
             String line = br.readLine();
             while(line!=null){
@@ -105,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     nums.add(random);
                     selectedWords.add(listOfWords.get(random));
                     String word = listOfWords.get(random);
+
                     getDef(word);
 
                 }
@@ -144,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void getSyn(String word, String definition){
         try {
-            String url = "https://api.api-ninjas.com/v1/thesaurus?word="+ word + "&X-Api-Key=hIHbhVmlkuSbUvkEnuvyhg==YAsEJ2nPEgRNcOpk";
+            String url = "https://api.api-ninjas.com/v1/thesaurus?word=" + word + "&X-Api-Key=eyXZ3Gk1kOSWZbvIczcYhSwZMrf2ht9UpplA2syl";
             String finalDefinition = definition;
             JsonObjectRequest r = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {

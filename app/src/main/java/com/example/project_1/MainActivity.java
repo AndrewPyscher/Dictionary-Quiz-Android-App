@@ -36,16 +36,16 @@ import java.util.concurrent.Executors;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
     Button btnSettings;
 
+    // arraylist to store all of the indexes of words that were used
     ArrayList<Integer> nums;
+    // listOfWords is an array list of everyword
+    // selectedWords is an arraylist of 100 random words
     ArrayList<String> listOfWords, selectedWords;
     Button btnQuiz, btnBrowseWords;
     ExecutorService executorService;
     static RequestQueue queue;
-    ActivityResultLauncher resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +61,17 @@ public class MainActivity extends AppCompatActivity {
         listOfWords = new ArrayList<>();
         selectedWords = new ArrayList<>();
 
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result ->{
-                });
-
+        // set up executor service for thread
         executorService = Executors.newSingleThreadExecutor();
 
-         //start thread
+         //start thread to populate singleton Dictionary object
         runOnUiThread(()->{
             Dictionary.createDictionary();
             readFile();
         });
 
+        // set listener for browse words. There is a check to wait until there is 10 words loaded from the api
+        // before you can launch the activity.
         btnBrowseWords.setOnClickListener(e-> {
             if(Dictionary.dictionary.size() >= 10) {
                 Intent intent = new Intent(this, BrowseWords.class);
@@ -82,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
                             + dictionaryItem.getDefinition());
                 }
 
-//                intent.putStringArrayListExtra("wordList", wordListAsStrings);
-//                resultLauncher.launch(intent);
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_LONG).show();
@@ -96,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // set listener for the quiz. There is a check to wait until there is 10 words loaded from the api
+        // before you can launch the activity.
         btnQuiz.setOnClickListener(e->{
             if(Dictionary.dictionary.size() >= 10){
                 Intent quiz = new Intent(this, Quiz.class);
@@ -106,10 +105,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // method to read file
+    // takes in a list of words and checks if its at least 3 characters
+    // after the file is read in, randomly select 100 words to add to the dictionary
     public void readFile(){
         InputStream is = getResources().openRawResource(R.raw.words);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
         try {
             String line = br.readLine();
             while(line!=null){
@@ -118,12 +119,13 @@ public class MainActivity extends AppCompatActivity {
                     listOfWords.add(line);
                 }
                 line = br.readLine();
-
             }
+            // select 100 random words
             Random r = new Random();
             int random;
             while(selectedWords.size() < 100){
                 random = r.nextInt(listOfWords.size() -1);
+                // make sure the same word isn't selected twice
                 if(!nums.contains(random)){
                     nums.add(random);
                     selectedWords.add(listOfWords.get(random));
@@ -139,22 +141,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // method that calls an api to get the definition for a words
     public static void getDef(String word){
             try {
                 String url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
                 JsonArrayRequest r = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
                     try {
+                        // convert the response into json and get the definition from it.
                         JSONObject arr = response.getJSONObject(0);
                         JSONArray meaning = arr.getJSONArray("meanings");
                         JSONObject first = meaning.getJSONObject(0);
                         JSONArray definitions = first.getJSONArray("definitions");
                         JSONObject def = definitions.getJSONObject(0);
                         String definition = def.getString("definition");
-
+                        // if the word has a definition, call the synonym api
                         getSyn(word, definition);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
+                    // if the word doesn't have a definition.
                 }, error -> {
                     Log.d("error", "error: " + Arrays.toString(error.getStackTrace()));
                 });
@@ -165,38 +170,33 @@ public class MainActivity extends AppCompatActivity {
 
             }
     }
-
+    // method that calls an synonym to get the definition for a words
     public static void getSyn(String word, String definition){
         try {
             String url = "https://api.api-ninjas.com/v1/thesaurus?word=" + word + "&X-Api-Key=eyXZ3Gk1kOSWZbvIczcYhSwZMrf2ht9UpplA2syl";
             String finalDefinition = definition;
             JsonObjectRequest r = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {
-                    String word1 = response.getString("word");
+                    // convert the response into json and get the synonym from it.
                     JSONArray synonyms = response.getJSONArray("synonyms");
                     ArrayList<String> temp = new ArrayList<>();
+                    // if the word has at least 3 synonyms, add it to the dictionary
+                    // if not, do not add it
                     if(synonyms.length() > 2) {
                         temp.add(synonyms.getString(0));
                         temp.add(synonyms.getString(1));
                         temp.add(synonyms.getString(2));
                         Dictionary.dictionary.add(new DictionaryItem(word, finalDefinition, temp, false));
                     }
-
-
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
             }, error -> {
-                Log.d("error", "error: " + Arrays.toString(error.getStackTrace()));
             });
 
             queue.add(r);
 
         }catch (Exception e){
-            definition = "null";
         }
     }
-
-
-
 }

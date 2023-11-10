@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -75,13 +77,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         btnQuiz.setOnClickListener(e->{
-            if(Dictionary.dictionary.size() >= 4){
+            if(Dictionary.dictionary.size() >= 10){
                 Intent quiz = new Intent(this, Quiz.class);
                 startActivity(quiz);
+            }else{
+                Toast.makeText(this, "Please wait a few seconds and try again...", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     public void readFile(){

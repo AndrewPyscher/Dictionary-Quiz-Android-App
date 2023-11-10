@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // selectedWords is an arraylist of 100 random words
     ArrayList<String> listOfWords, selectedWords;
     Button btnQuiz, btnBrowseWords;
+    Button btnApi1, btnApi2;
     ExecutorService executorService;
     static RequestQueue queue;
 
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         btnSettings = findViewById(R.id.btnSettings);
         btnQuiz = findViewById(R.id.btnQuiz);
         btnBrowseWords = findViewById(R.id.btnBrowseWords);
+        btnApi1 = findViewById(R.id.btnApi1);
+        btnApi2 = findViewById(R.id.btnApi2);
 
         queue =  Volley.newRequestQueue(this);
         nums = new ArrayList<>();
@@ -71,7 +75,23 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(()->{
             Dictionary.createDictionary();
             readFile();
+
         });
+
+        // listener that uses an implicit intent to take the user to the dictionary api page
+        btnApi1.setOnClickListener(e->{
+            Uri uri = Uri.parse("https://dictionaryapi.dev/");
+            Intent it = new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(it);
+        });
+
+        btnApi2.setOnClickListener(e->{
+            Uri uri = Uri.parse("https://api-ninjas.com/api/thesaurus");
+            Intent it = new Intent(Intent.ACTION_VIEW,uri);
+            startActivity(it);
+        });
+
+        // listener that uses an implicit intent to take the user to the synonym api page
 
         // set listener for browse words. There is a check to wait until there is 10 words loaded from the api
         // before you can launch the activity.

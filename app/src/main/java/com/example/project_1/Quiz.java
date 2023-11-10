@@ -80,6 +80,7 @@ public class Quiz extends AppCompatActivity {
         words = Dictionary.dictionary;
         generateNewQuestion();
 
+        // when quiz starts, make the quiz show up
         btnStart.setOnClickListener(e->{
             btnStart.setVisibility(View.INVISIBLE);
             rdoGroup.setVisibility(View.VISIBLE);

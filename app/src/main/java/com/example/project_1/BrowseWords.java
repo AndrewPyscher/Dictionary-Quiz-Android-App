@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ public class BrowseWords extends AppCompatActivity {
     ArrayList<DictionaryItem> words;
     ArrayList<String> wordsAsStringCSV;
 
+    EditText edtSearchWord;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class BrowseWords extends AppCompatActivity {
         btnSearch = findViewById(R.id.btnSearch);
         spnFilterOptions = findViewById(R.id.spnFilterOptions);
         words = Dictionary.getDictionary();
+        edtSearchWord = findViewById(R.id.edtSearchWord);
 
         DictionaryAdapter dictionaryAdapter = new DictionaryAdapter(words, this);
         rcWordList.setAdapter(dictionaryAdapter);
@@ -103,6 +107,29 @@ public class BrowseWords extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
+      
+        //search a word or partial word in the dictionary
+        btnSearch.setOnClickListener(e->{
+            //store search word
+            String search = edtSearchWord.getText()+"";
+            //Log.d("MYTAG", String.valueOf(words));
+            //create a new arraylist for storing the search results
+            ArrayList<DictionaryItem> searchedWords = new ArrayList<>();
+                for (int i = 0; i < words.size(); i++) {
+                   //get the word
+                  if(words.get(i).word.contains(search)){
+                      searchedWords.add(words.get(i)); //add to the arraylist
+
+                  }
+                }
+                //create a new adapter with the results
+            DictionaryAdapter searchedAdapter = new DictionaryAdapter(searchedWords, getApplicationContext());
+            rcWordList.setAdapter(searchedAdapter);
+
+
+            });
+
+
 
 
     }

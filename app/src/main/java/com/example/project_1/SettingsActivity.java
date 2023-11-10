@@ -24,10 +24,10 @@ public class SettingsActivity extends AppCompatActivity {
     Switch switchDarkMode;
     RadioGroup rdgQuizOptions;
     RadioButton rdbDefinitions, rdbSynonyms, rdbAll;
-    SeekBar seekQuizLength, seekFontSize;
+    SeekBar seekQuizLength;
     String color_options[] = {"Black","Red","Navy","Purple","Orange","Green"};
     Button btnSave, btnCancel;
-    TextView txtFontSize, txtNumQuestions;
+    TextView  txtNumQuestions;
     boolean beginningState;
 
     @Override
@@ -36,10 +36,8 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         //initialize views
-        txtFontSize = findViewById(R.id.txtFontSize);
         txtNumQuestions = findViewById(R.id.txtNumQuestions);
         spinFontColor = findViewById(R.id.spinFontColor);
-        seekFontSize = findViewById(R.id.seekFontSize);
         seekQuizLength = findViewById(R.id.seekQuizLength);
         switchDarkMode = findViewById(R.id.switchDarkMode);
         rdgQuizOptions = findViewById(R.id.rdgQuizOptions);
@@ -73,9 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
          Integer fontColorSetting = sharedPref.getInt("FONT_COLOR", 0);
          spinFontColor.setSelection(fontColorSetting);
 
-        Integer fontSizeSetting = sharedPref.getInt("FONT_SIZE", 12);
-        txtFontSize.setText("Font Size: " + fontSizeSetting);
-        seekFontSize.setProgress(fontSizeSetting);
+
 
         Boolean darkModeSetting = sharedPref.getBoolean("DARK_MODE", false);
         //continue to debug this
@@ -132,7 +128,6 @@ public class SettingsActivity extends AppCompatActivity {
                 // save shared preferences
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("FONT_COLOR", spinFontColor.getSelectedItemPosition());
-                editor.putInt("FONT_SIZE", seekFontSize.getProgress());
                 editor.putBoolean("DARK_MODE", switchDarkMode.isChecked());
                 editor.putBoolean("QUIZ_MODE_ALL", rdbAll.isChecked());
                 editor.putBoolean("QUIZ_MODE_DEFINITIONS", rdbDefinitions.isChecked());
@@ -143,20 +138,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        //create a listener for the font size settings
-        seekFontSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txtFontSize.setText("Font Size: "+String.valueOf(progress));
 
-            }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
         //create
         seekQuizLength.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

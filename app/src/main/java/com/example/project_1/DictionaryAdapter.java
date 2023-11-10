@@ -35,6 +35,19 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
 
         holder.tvWord.setText(dictionaryItem.getWord());
         holder.tvDefinition.setText(dictionaryItem.getDefinition());
+        holder.rdoFavorite.setChecked(dictionaryItem.favorite);
+
+        //help
+        holder.rdoFavorite.setOnClickListener(e->{
+            if (holder.rdoFavorite.isChecked()) {
+                dictionaryItem.setFavorite(true);
+            }
+            else {
+                dictionaryItem.setFavorite(false);
+            }
+        });
+
+
     }
     @Override
     public int getItemCount() {
@@ -65,6 +78,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
             tvWord = itemView.findViewById(R.id.tvWord);
             tvDefinition = itemView.findViewById(R.id.tvDefinition);
             rdoFavorite = itemView.findViewById(R.id.rdoFavorite);
+
         }
     }
 }

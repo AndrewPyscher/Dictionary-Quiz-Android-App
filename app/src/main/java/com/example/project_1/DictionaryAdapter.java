@@ -1,9 +1,14 @@
 package com.example.project_1;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -32,6 +37,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
     @Override
     public void onBindViewHolder(@NonNull DictionaryViewHolder holder, int position) {
         DictionaryItem dictionaryItem = words.get(position);
+
 
         holder.tvWord.setText(dictionaryItem.getWord());
         holder.tvDefinition.setText(dictionaryItem.getDefinition());
@@ -71,13 +77,13 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Di
         TextView tvWord;
         TextView tvDefinition;
         RadioButton rdoFavorite;
+        Button btnImage;
         public DictionaryViewHolder(@NonNull View itemView) {
             super(itemView);
 
             tvWord = itemView.findViewById(R.id.tvWord);
             tvDefinition = itemView.findViewById(R.id.tvDefinition);
             rdoFavorite = itemView.findViewById(R.id.rdoFavorite);
-
         }
     }
 }

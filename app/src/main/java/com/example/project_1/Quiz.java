@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +25,10 @@ public class Quiz extends AppCompatActivity {
     ArrayList<DictionaryItem> choices; //holds the list of choices for a given question
     ArrayList<DictionaryItem> words; //holds the list of words in the dictionary
     DictionaryItem correctAnswer;
-    int remainingQuestions, numCorrectAnswers;
+    int remainingQuestions, numCorrectAnswers, fontColorIndex;
     long timeStart;
     boolean synonym, definition, all;
+    String colorHex;
 
     int pos;
     @Override
@@ -41,16 +43,45 @@ public class Quiz extends AppCompatActivity {
         tvQuestionLabel = findViewById(R.id.tvQuestionLabel);
         tvHeader = findViewById(R.id.tvHeader);
 
+
         SharedPreferences sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
+        fontColorIndex = sp.getInt("FONT_COLOR", 0);
         remainingQuestions = sp.getInt("NUM_QUESTIONS", 10); //whatever the shared preference is named in settings activity
         definition = sp.getBoolean("QUIZ_MODE_DEFINITIONS", false);
         synonym = sp.getBoolean("QUIZ_MODE_SYNONYMS", false);
         all = sp.getBoolean("QUIZ_MODE_ALL", true);
 
+        // get the hex value of the color selected in settings
+        switch (fontColorIndex)     {
+            case 0:
+                colorHex = "#000000";    //black
+                break;
+            case 1:
+                colorHex = "#990000"   ;   //red
+                 break;
+            case 2:
+                colorHex = "#0b5394"  ;   //navy
+                 break;
+            case 3:
+                colorHex = "#674ea7"  ;       //purple
+                 break;
+            case 4:
+                colorHex = "#b45f06";      //orange
+                 break;
+            case 5:
+                colorHex = "#38761d";     //green
+                 break;
+        }
+          //set text values to the color
+         tvHeader.setTextColor(Color.parseColor(colorHex));
+         tvQuestionLabel.setTextColor(Color.parseColor(colorHex));
+         tvQuizWord.setTextColor(Color.parseColor(colorHex));  
+
         initialize();
         words = Dictionary.dictionary;
         generateNewQuestion();
 
+        // when quiz starts, make the quiz show up
         btnStart.setOnClickListener(e->{
             btnStart.setVisibility(View.INVISIBLE);
             rdoGroup.setVisibility(View.VISIBLE);
@@ -61,11 +92,15 @@ public class Quiz extends AppCompatActivity {
             timeStart = System.currentTimeMillis();
         });
 
+        // listener for when the user tries to submit
         btnSubmit.setOnClickListener(v->{
+            // checks if something is selected
             if(choiceSelected()){
                 checkAnswer();
+                // checks if the game is over
                 if(remainingQuestions > 0){
                     generateNewQuestion();
+                    // if it is over, get the total time and go to the stats page
                 }else{
                     long totalTime = System.currentTimeMillis() - timeStart;
                     Intent statsActivity = new Intent(this, StatsActivity.class);
@@ -74,12 +109,15 @@ public class Quiz extends AppCompatActivity {
                     startActivity(statsActivity);
                     finish();
                 }
+                // if the user doesn't have an answer
             }else{
                 Toast.makeText(this, "Please select an answer.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // when the app starts figure out the settings the user selected
+    // and make the
     private void initialize(){
         rdoGroup.setVisibility(View.INVISIBLE);
         tvQuizWord.setVisibility(View.INVISIBLE);
@@ -151,6 +189,8 @@ public class Quiz extends AppCompatActivity {
         tvQuizWord.setText(correctAnswer.getWord()); //show the word that the user will have to guess the syn/def for
         for(int i = 0; i < choices.size(); i++){
             RadioButton rb = (RadioButton) rdoGroup.getChildAt(i);
+             rb.setTextColor(Color.parseColor(colorHex));    //set the radio buttons color
+
             if(definition){
                 rb.setText(choices.get(i).getDefinition());
             }else if (synonym){

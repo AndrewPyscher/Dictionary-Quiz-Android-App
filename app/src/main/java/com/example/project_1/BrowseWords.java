@@ -74,7 +74,11 @@ public class BrowseWords extends AppCompatActivity {
 
                 if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("alphabetical")) {
                     //enter logic for sorting list alphabetically
-                    ArrayList<DictionaryItem> alphabeticalWords = words;
+                    ArrayList<DictionaryItem> alphabeticalWords = new ArrayList<>();
+
+                    for (int j = 0; j < words.size(); j++) {
+                        alphabeticalWords.add(words.get(j));
+                    }
 
                     Collections.sort(alphabeticalWords, Comparator.comparing(DictionaryItem::getWord));
 

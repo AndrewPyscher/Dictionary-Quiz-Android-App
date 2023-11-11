@@ -71,6 +71,9 @@ public class Quiz extends AppCompatActivity {
             case 5:
                 colorHex = "#38761d";     //green
                  break;
+            case 6:
+                colorHex = "#FFFFFF";       //white
+                break;
         }
           //set text values to the color
          tvHeader.setTextColor(Color.parseColor(colorHex));

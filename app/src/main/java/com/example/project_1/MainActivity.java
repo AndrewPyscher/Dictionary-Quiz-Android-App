@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     // method that calls an synonym to get the definition for a words
     public static void getSyn(String word, String definition){
         try {
-            String url = "https://api.api-ninjas.com/v1/thesaurus?word=" + word + "&X-Api-Key=eyXZ3Gk1kOSWZbvIczcYhSwZMrf2ht9UpplA2syl";
+            String url = "https://api.api-ninjas.com/v1/thesaurus?word=" + word + "&X-Api-Key=VhREFvhB8w8I0jUhGLrUHQ==7Fo0U7sw0jbUcoRT";
             String finalDefinition = definition;
             JsonObjectRequest r = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
                 try {

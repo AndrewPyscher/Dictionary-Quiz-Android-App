@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatActivity {
     RadioGroup rdgQuizOptions;
     RadioButton rdbDefinitions, rdbSynonyms, rdbAll;
     SeekBar seekQuizLength;
-    String color_options[] = {"Black","Red","Navy","Purple","Orange","Green"};
+    String color_options[] = {"Black","Red","Navy","Purple","Orange","Green", "White"};
     Button btnSave, btnCancel;
     TextView  txtNumQuestions;
     boolean beginningState;

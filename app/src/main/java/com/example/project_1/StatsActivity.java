@@ -23,13 +23,14 @@ public class StatsActivity extends AppCompatActivity {
 
     //variables for number of correct answers, questions from quiz, and percentage of correct answers
     int correctAnswers, numOfQuestions;
-    double percentageCorrect;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
+        //connect variables to screen
         tvTime = findViewById(R.id.tvTime);
         tvPercentageCorrect = findViewById(R.id.tvCorrectAnswersPercent);
         btnBackToMain = findViewById(R.id.btnBackToMain);
@@ -40,22 +41,25 @@ public class StatsActivity extends AppCompatActivity {
         millisecondsToFinish = quizIntent.getLongExtra("totalTime", -1);
         correctAnswers = quizIntent.getIntExtra("numCorrectAnswers", -1);
 
+        //get number of questions in quiz from shared preferences in settings activity
         SharedPreferences sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
         numOfQuestions = sp.getInt("NUM_QUESTIONS", 10);
 
-
+        //update the time and background color based on how fast the user takes the test
         updateTime(millisecondsToFinish);
         updateTimeColor(millisecondsToFinish);
 
-        //five out of 10 as a place holder until quiz activity is working
+        //update the grade and background color based on how well the user scored
         updatePercentageCorrect(correctAnswers, numOfQuestions);
         updatePercentageCorrectColor(correctAnswers, numOfQuestions);
 
+        //take the user back to the quiz activity when they click the button to take another quiz
         btnPlayAgain.setOnClickListener(e->{
             Intent playAgainIntent = new Intent(this, Quiz.class);
             startActivity(playAgainIntent);
         });
 
+        //take the user back to the main menu activity when they click the back to main button
         btnBackToMain.setOnClickListener(e->{
             Intent backToMainIntent = new Intent(this, MainActivity.class);
             startActivity(backToMainIntent);
@@ -95,10 +99,12 @@ public class StatsActivity extends AppCompatActivity {
     public void updateTime (Long milliseconds) {
         String time = "00:00";
 
+        //convert milliseconds into minutes and seconds
         Long totalSeconds = milliseconds / 1000;
         Long minutes = totalSeconds / 60;
         Long seconds = totalSeconds % 60;
 
+        //format seconds to have two digits
         if (seconds < 10) {
             time = minutes + ":0" + seconds;
         }
@@ -106,11 +112,13 @@ public class StatsActivity extends AppCompatActivity {
             time = minutes + ":" + seconds;
         }
 
+        //display minutes and seconds on tvTime
         tvTime.setText(time);
     }
 
     //display percentage of correct answers
     public void updatePercentageCorrect(double correct, double total) {
+        //calculate grade percentage
         double rawGrade = (correct / total) * 100;
 
         tvPercentageCorrect.setText(rawGrade + "%");

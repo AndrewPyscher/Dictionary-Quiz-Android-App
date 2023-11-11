@@ -39,6 +39,7 @@ public class BrowseWords extends AppCompatActivity {
         rcWordList = findViewById(R.id.rcWordList);
         btnSearch = findViewById(R.id.btnSearch);
         spnFilterOptions = findViewById(R.id.spnFilterOptions);
+        // get the words from the dictionary class
         words = Dictionary.getDictionary();
         edtSearchWord = findViewById(R.id.edtSearchWord);
 
@@ -73,7 +74,11 @@ public class BrowseWords extends AppCompatActivity {
 
                 if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("alphabetical")) {
                     //enter logic for sorting list alphabetically
-                    ArrayList<DictionaryItem> alphabeticalWords = words;
+                    ArrayList<DictionaryItem> alphabeticalWords = new ArrayList<>();
+
+                    for (int j = 0; j < words.size(); j++) {
+                        alphabeticalWords.add(words.get(j));
+                    }
 
                     Collections.sort(alphabeticalWords, Comparator.comparing(DictionaryItem::getWord));
 
@@ -82,6 +87,14 @@ public class BrowseWords extends AppCompatActivity {
                 }
                 else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("favorites")) {
                     //enter logic for sorting list to only include favorites
+                    ArrayList<DictionaryItem> favoriteWords = new ArrayList<>();
+                    for (int j = 0; j < words.size(); j++) {
+                        if (words.get(j).favorite) {
+                            favoriteWords.add(words.get(j));
+                        }
+                    }
+                    DictionaryAdapter favoriteAdapter = new DictionaryAdapter(favoriteWords, getApplicationContext());
+                    rcWordList.setAdapter(favoriteAdapter);
                 }
                 else if (spnFilterOptions.getItemAtPosition(i).toString().equalsIgnoreCase("random")) {
                     //enter logic for sorting list randomly

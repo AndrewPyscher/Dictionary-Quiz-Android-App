@@ -43,6 +43,7 @@ public class Quiz extends AppCompatActivity {
         tvQuestionLabel = findViewById(R.id.tvQuestionLabel);
         tvHeader = findViewById(R.id.tvHeader);
 
+
         SharedPreferences sp = getSharedPreferences("APP_PREFERENCES", Context.MODE_PRIVATE);
         fontColorIndex = sp.getInt("FONT_COLOR", 0);
         remainingQuestions = sp.getInt("NUM_QUESTIONS", 10); //whatever the shared preference is named in settings activity
@@ -94,11 +95,15 @@ public class Quiz extends AppCompatActivity {
             timeStart = System.currentTimeMillis();
         });
 
+        // listener for when the user tries to submit
         btnSubmit.setOnClickListener(v->{
+            // checks if something is selected
             if(choiceSelected()){
                 checkAnswer();
+                // checks if the game is over
                 if(remainingQuestions > 0){
                     generateNewQuestion();
+                    // if it is over, get the total time and go to the stats page
                 }else{
                     long totalTime = System.currentTimeMillis() - timeStart;
                     Intent statsActivity = new Intent(this, StatsActivity.class);
@@ -107,12 +112,15 @@ public class Quiz extends AppCompatActivity {
                     startActivity(statsActivity);
                     finish();
                 }
+                // if the user doesn't have an answer
             }else{
                 Toast.makeText(this, "Please select an answer.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // when the app starts figure out the settings the user selected
+    // and make the quiz invisible until the app starts.
     private void initialize(){
         rdoGroup.setVisibility(View.INVISIBLE);
         tvQuizWord.setVisibility(View.INVISIBLE);

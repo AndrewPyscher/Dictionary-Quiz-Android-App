@@ -72,11 +72,14 @@ public class MainActivity extends AppCompatActivity {
         executorService = Executors.newSingleThreadExecutor();
 
          //start thread to populate singleton Dictionary object
-        runOnUiThread(()->{
-            Dictionary.createDictionary();
-            readFile();
+        if(Dictionary.dictionary == null){
+            runOnUiThread(()->{
+                Dictionary.createDictionary();
+                readFile();
 
-        });
+            });
+        }
+
 
         // listener that uses an implicit intent to take the user to the dictionary api page
         btnApi1.setOnClickListener(e->{
